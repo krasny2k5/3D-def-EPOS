@@ -1,0 +1,10 @@
+      PAF-modeling of pressure sources
+
+   Parameters
+ -----------------------------------------
+   50.0   ....Pressure change (MPa)        
+      5   ....Smoothing coeff. (0<smo<1000)
+      3   ....Significance limit (0<sig<10)
+      1   ....Number of observation times        
+      0   ....First observation time   
+ -----------------------------------------

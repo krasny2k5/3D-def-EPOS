@@ -1,0 +1,108 @@
+                          
+
+                                                        P A F - EPOS
+
+A software tool to estimate free-geometry extended bodies of anomalous pressure from surface deformation data.
+
+
+                    
+                                                     U S E R  M A N U A L 
+
+
+Institute of Geosciences (CSIC-UCM), Madrid, Spain
+
+
+
+
+1. INTRODUCTION
+
+The programm PAF-EPOS carries out inversions of surface deformation data (1D to 3D) (InSAR, GPS, and terrestrial data) as produced by 3D free-geometry extended bodies with anomalous pressure changes. The anomalous structures are described as aggregation of elementary cells (point sources) in an elastic half space. The linear inverse problem (supply with some simple regularization conditions) is solved by means of an exploratory approach. This software can be used to invert large data sets (e.g. InSAR data sets) or with data coming from small control networks (e.g. GPS monitoring data), mainly in volcanic areas to estimate the expected causative pressure bodies.
+
+The software package consists of one executable file: PAF-EPOS.exe 
+
+It reads the deformation data (DeforData.txt) and the intermediate file (CellsConfig.txt), and runs the inversion to model the observed data with some 3D extended bodies of anomalous pressure described as aggregation of filled cells.
+
+The PAF-EPOS software can work in two different ways: 
+
+     (1) statically, considering large displacement data files describing the deformation field (for instance, thousands of pixels with displacement values from SAR interferometry, or combined with GPS data) for a concrete time period; and 
+
+     (2) dynamically, sequential inversion of successive stages of a deformation process (for instance, successive GPS displacement data obtained at different epochs from a permanent monitoring network.
+
+
+2. INPUT DATA FILE
+
+The 3D deformation data from the several sites are collected in the file DeforData.txt. 
+This file contains, for each data point:
+
+    coordinates UTM East-North (m), altitude (m), and deformation values dz (cm, positive upward), "use" value, dx (cm, positive eastward), "use" value, dy (cm, positive northward), and its "use" value. 
+
+The "use" values in the adjacent columns, associated to each measurement, are relative weighting value close to 1.0 (smaller values indicate lower quality, higher values indicate higher quality, and zero values indicate observation value not included in the inversion process).
+This data file can optionally be terminated with an end-of-file character or with a line of zeros. In the following example, data for dy (northing) are zero and they are not used ("user" zero).
+
+               425575 4527988   91.6   -0.43 1.   -0.47 1.    0  0.    
+               425844 4527985   95.7   -0.37 1.   -0.40 1.    0  0.
+               426114 4527982  105.0   -0.11 1.   -0.11 1.    0  0.
+               426383 4527980  102.7   -0.25 1.   -0.31 1.    0  0.
+               .................................................
+               422983 4515269  -2.00    0.94 1.   -3.48 1.    0  0.
+               422778 4515093  -2.00    0.57 1.   -3.16 1.    0  0.
+              0 0 0 0 0 0 0 0
+
+
+In the case of sequential application, the successive data are provided on successive files, named Dn.txt, where n is a successive integer number (for instance D000001.txt, D000002.txt, D000003.txt ,...), and with the same format as DeforData.txt.
+ 
+
+3. FILE OF PARAMETERS and SOFTWARE USAGE
+
+Once the data are available, an intermediate file (PAF-Parameters.txt) with values for five inversion parameters is required. The values of the parameters contained in this file can be manually modified to adapt to the modeller necessities.
+
+         (a) the dimensionless smoothing coefficient sm (ranging between 0 and 1000), and, 
+
+The sm coefficient regulates the balance between data fit and model complexity in the inversion approach. For a low sm value (close to 0) the resulting model becomes very simple, regular and compact, but the data fit can be weak. Conversely, a high sm value (close to 1000) the data fit is very good (even by fitting some noise component), but the model can be very complex, sometimes even with artefacts. See application cases in the paper for choosing criteria.
+       
+         (b) a value for the (positive or negative) pressure contrast throughout the entire anomalous model, dp (MPa). 
+
+ The pressure contrast value ?p can be selected also by doing some iterative running of the software. For very high values, the model becomes very condensed and compact, and some geometrical details can be lost. Conversely, for very low values the sources model becomes larger, with rounding inflated shape. In general, big displacements require strong pressure contrasts and small ones require low-pressure contrasts. We suggest, again, some iteration trying different values and observing the resulting anomalous geometry. Nevertheless, this is not a critical parameter. It concerns mostly to rather aesthetic aspects of the model. 
+
+        (c) a value for “Significance limit (0<sig<10)”
+  
+ “Significance limit (0<sig<10)”, gives the desired threshold between the significant cells (for those close and covered by the data points) from the non-significant cells (for those far from the data points). Its default value is 5, but the user can set optionally a different value (for instance, for a low significance threshold, nearly all cells will be considered as significant) .
+
+       (d) the number of sequential data files to preocess.  A value 1 indicates only one epoch ordata input    
+
+       (e) identification of the first epoch to process
+ 
+The values for the smoothing coefficient sm (which controls the balance between data fit and model regularity in the regularity conditions) and for the basic pressure contrast dp (in MPa) are essential for the inversion process. Suitable values for both parameters are normally selected in an trial and error way, looking for good model features (regularity, size, etc.) and good residual distribution (null autocorrelation of residuals). Nevertheless, the choice of these parameters is not too critical with respect to the main features of the resulting model.
+
+Once the file PAF-Parmeter.txt is created the program PAF-EPOS.exe can work without any other requirement, processing continuously, epoch by epoch, until it inverts the data of the last epoch.
+
+As final product, the inversion approach creates an output file named ModPAF.txt containing the geometrical description of the resulting model, several others parameters of this model, and a detailed information about modelled and residual values. It will be described further on.
+
+
+
+4. OUTPUT FILE
+
+The main product of the PAF-EPOS inversion is the file ModPAF.txt. This file contains the following information:
+
+     (1) A copy of the assumed inversion parameters similar to that in file CellConfig.txt.
+
+     (2) A list of the filled cells (those with no-null pressure values) containing, for each cells, the UTM coordinates X and Y (m), and the depth Z (m, above sea level) of its geometric center, their sides sizes sx ,sy ,sz (m), the corresponding positive or negative pressure contrast value, and a value for the significance (given by the inverse of the root mean square distance of the cell with respect to the data points, normalized to range from 0 to 20) (higher values correspond to more sensitive cells). This part can be used for further, more sophisticated, drawings of the resulting model.
+
+     (3) After that, some additional parameters and results about the inversion process are given, followed by a list of the observed, modelled and residual values for the data points. For each point, the file contains: UTM coordinates (m), altitude (m), observed, modelled and residual values (cm) for each component (dz, dx, dy), and an additional value for relative quality weighting (mean value 1) according to the resulting residual values for the three components. This part of the output file can be used for further drawings and statistical analysis of the inversion residuals (see examples below).
+
+In the case of sequential application of the PAF inversion approach, for each successive data file D…....txt (e.g., D00016.txt) corresponding to successive monitoring epochs (respective sixteenth epoch), the program generates a model file M…….txt (e.g., M00016.txt) with the same content as ModPAF.txt.
+
+
+Related information in 
+
+A.G. Camacho, J. Fernandez, F. Cannavo. 2018. PAF: A software tool to estimate free-geometry extended bodies of
+anomalous pressure from surface deformation data.  Computers and Geosciences 111, 235–243. https://doi.org/10.1016/j.cageo.2017.11.014
+
+
+ 
+
+
+
+
+
+
