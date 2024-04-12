@@ -8,4 +8,4 @@ For now there are 4 different directories:
 - HELPER: different programs intended for data manipulation and trasnformation between formats.
 - DOCS: other documentation related to the project.
 
-This repository is created by Joaquín Escayo @ jescayo@ucm.es, feel free to contact me for any question.
+This repository is created by Joaquín Escayo @ jescayo@ucm.es/j.escayo@upm.es feel free to contact me for any question.
